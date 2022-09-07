@@ -1,5 +1,7 @@
 import pandas as pd 
 import numpy as np
+from  bokeh.models import Panel , Row , ColumnDataSource ,  MultiChoice
+from bokeh.palettes import Category10_10
 
 
 data_medals = pd.read_csv('olympic_medals.csv')
@@ -32,6 +34,7 @@ to which game_slugs were in winters category in data_host then put it True and a
 ''' ### Adding a column just for years'''
 years = data_medals['slug_game'].str.extract('(\d+)', expand=False)
 data_medals.insert(3 ,'Years' ,years , True)
+data_medals['Years']=data_medals['Years'].astype(int)
 
 
 ''' in this dataset,  for some past years ,Germany country name came in two different names
@@ -61,3 +64,33 @@ solo = data_medals[data_medals['participant_type']=='Athlete']
 team_grouped_nan=team = data_medals[data_medals['athlete_full_name'].isna()]
 data_m = pd.concat([team_grouped_nan,team_grouped , solo], axis=0).reset_index(drop=True)
 
+'''FILTERING AND MAKING THE APPROPRIATE DATASET WITH md() FUNCTION TO BE DELIVERED TO mp() FUNCTION'''
+
+def md(c , rs = 1896, re=2020 , s=['Wrestling'] , m =['GOLD']):
+    
+    # df3.insert(3 ,'colors',True)
+    df1 = pd.DataFrame(columns =dt_columns)
+    df2 = pd.DataFrame(columns =dt_columns) 
+    for i , r_data in enumerate(m):
+        subset= data_m[data_m['medal_type'] ==r_data]
+        df1 = df1.append(subset)
+    for j , f_data in enumerate(s) :
+        s2ubset=df1[df1['discipline_title']==f_data]
+        df2=df2.append(s2ubset)
+    
+    
+    r = re - rs
+    bin = 4
+    d = pd.DataFrame(columns =[ 'proportion','left' ,'right' ,'name', 'color'])
+    for k , l_data in enumerate(c) :
+        p3ubset = df2[df2['country_name'] == l_data] 
+        
+        arr_hist , edge =np.histogram(p3ubset['Years'],  bins = int(r/bin) , range =[rs,re])
+        arr_df = pd.DataFrame({'proportion':arr_hist , 'left':edge[:-1] , 'right':edge[1:]})
+        arr_df['name'] = l_data
+        arr_df['color'] = Category10_10[k]
+        d=d.append(arr_df)
+    d= d.sort_values(['name' , 'left'])    
+    # type(data_medals['Years'])
+    d = ColumnDataSource(d)
+    return d
