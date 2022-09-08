@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from  bokeh.models import Panel , Row , ColumnDataSource ,  MultiChoice
 from bokeh.palettes import Category10_10
+from  bokeh.plotting import Figure 
+
 
 
 data_medals = pd.read_csv('olympic_medals.csv')
@@ -94,3 +96,16 @@ def md(c , rs = 1896, re=2020 , s=['Wrestling'] , m =['GOLD']):
     # type(data_medals['Years'])
     d = ColumnDataSource(d)
     return d
+
+def mp(sh_data):
+
+    p=Figure(height=570 , width= 570 , title='OLYMPIC MEDALSINTERACTIVE DASHBOARS BY COUNTRIES' ,  x_axis_label = 'YEARS',  y_axis_label = 'Nmuber of medals')
+
+    p.xaxis.axis_label_text_font_size = '15pt'
+    p.xaxis.axis_label_text_font_style = 'bold'
+    p.yaxis.axis_label_text_font_size = '15pt'
+    p.yaxis.axis_label_text_font_style = 'bold'
+    p.quad(source=sh_data , bottom = 0 ,color = 'color',  fill_alpha=0.55 , top = 'proportion' , left = 'left' ,right= 'right' , legend ='name')
+
+    
+    return p
