@@ -3,7 +3,7 @@ import numpy as np
 from  bokeh.models import Panel , Row , ColumnDataSource ,  MultiChoice
 from bokeh.palettes import Category10_10
 from  bokeh.plotting import Figure 
-
+from bokeh.models.widgets import  RangeSlider 
 
 
 data_medals = pd.read_csv('olympic_medals.csv')
@@ -109,3 +109,21 @@ def mp(sh_data):
 
     
     return p
+
+def update(attr , old , new) :
+    pass
+
+cclist = list(set(data_medals['country_name']))
+sslist = list(set(data_medals['discipline_title']))
+
+chbox = MultiChoice (value=[], options=cclist , title  = 'COUNTRIES')
+chbox.on_change("value", update)
+
+chbox_s = MultiChoice(value=[] , options = sslist , title = 'DISCIPLINES')
+chbox_s.on_change('value' , update)
+
+chbox_m = MultiChoice(value=[] , options = ['GOLD' , 'BRONZE' , 'SILVER' ], title = 'MEDALS')
+chbox_m.on_change('value' , update)
+
+range_slider = RangeSlider(start = 1896 , end=2022 , value = (1896 , 2022) , step=4, title='YEARS')
+range_slider.on_change('value', update)
