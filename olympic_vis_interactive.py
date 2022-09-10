@@ -111,7 +111,12 @@ def mp(sh_data):
     return p
 
 def update(attr , old , new) :
-    pass
+    countries =[x for x in chbox.value]
+    disciplines = [s for s in chbox_s.value]
+    medals = [m for m in chbox_m.value]
+    nds  = md(countries ,range_slider.value[0] , range_slider.value[1] , disciplines , medals)
+
+    src.data.update(nds.data)
 
 cclist = list(set(data_medals['country_name']))
 sslist = list(set(data_medals['discipline_title']))
@@ -127,3 +132,9 @@ chbox_m.on_change('value' , update)
 
 range_slider = RangeSlider(start = 1896 , end=2022 , value = (1896 , 2022) , step=4, title='YEARS')
 range_slider.on_change('value', update)
+
+
+init_data= [x for x in chbox.value] 
+init_d = [s for s in chbox_s.value]
+src = md(init_data , rs = 1896, re=2020 , s=['Wrestling'] , m =['GOLD'])
+pp= mp(src)
