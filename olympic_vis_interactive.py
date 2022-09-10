@@ -3,7 +3,9 @@ import numpy as np
 from  bokeh.models import Panel , Row , ColumnDataSource ,  MultiChoice
 from bokeh.palettes import Category10_10
 from  bokeh.plotting import Figure 
-from bokeh.models.widgets import  RangeSlider 
+from bokeh.models.widgets import  RangeSlider , Tabs
+from bokeh.layouts import Row,  WidgetBox  
+from bokeh.io import curdoc 
 
 
 data_medals = pd.read_csv('olympic_medals.csv')
@@ -138,3 +140,12 @@ init_data= [x for x in chbox.value]
 init_d = [s for s in chbox_s.value]
 src = md(init_data , rs = 1896, re=2020 , s=['Wrestling'] , m =['GOLD'])
 pp= mp(src)
+
+w = WidgetBox(chbox, chbox_s,chbox_m,  range_slider)    
+
+l=Row(children=[w, pp])
+tab = Panel(child = l , title = 'Olympic Games')
+tabs = Tabs(tabs=[tab])
+
+# Add it to the current document (displays plot)
+curdoc().add_root(tabs)
